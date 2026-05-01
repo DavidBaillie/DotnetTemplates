@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "leema",
+  "classifications": ["Web", "API", "Minimal API"],
+  "identity": "MinimalApi.Template",
+  "name": "Minimal API Template",
+  "shortName": "minapi",
+  "sourceName": "SukkotStore",
+  "tags": {
+    "language": "C#",
+    "type": "solution"
+  },
+  "sources": [
+    {
+      "modifiers": [
+        {
+          "exclude": [
+            ".template.config/**",
+            "**/bin/**",
+            "**/obj/**",
+            "**/*.user"
+          ]
+        }
+      ]
+    }
+  ]
+}

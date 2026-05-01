@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SukkotStore.WebApp\SukkotStore.WebApp.csproj" />
+    <ProjectReference Include="..\ExampleTemplate.WebApp\ExampleTemplate.WebApp.csproj" />
   </ItemGroup>
 
   <ItemGroup>
