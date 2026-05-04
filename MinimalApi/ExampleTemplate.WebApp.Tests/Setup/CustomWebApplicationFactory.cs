@@ -1,11 +1,14 @@
-﻿using ExampleTemplate.WebApp.Tests.Setup.Authentication;
-using Microsoft.AspNetCore.Authentication;
+﻿//#if(includeAuth)
+using ExampleTemplate.WebApp.Tests.Setup.Authentication;
+//#endif
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ExampleTemplate.WebApp.Tests.Setup;
 
+/// <summary>
+/// Web Application factory used to spin up instances of the WebApp.
+/// </summary>
 public sealed class CustomWebApplicationFactory
     : WebApplicationFactory<ExampleTemplate.WebApp.Program>
 {
@@ -18,20 +21,18 @@ public sealed class CustomWebApplicationFactory
         builder.ConfigureServices(services =>
         {
             //#if(includeAuth)
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = "test";
-                x.DefaultChallengeScheme = "test";
-            })
-            .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>("test", op => { });
+            services.ConfigureAuthentication();
             //#endif
         });
     }
 
+    /// <inheritdoc />
     protected override void ConfigureClient(HttpClient client)
     {
         base.ConfigureClient(client);
 
-
+        //#if(includeAuth)
+        client.ConfigureTestAuthentication();
+        //#endif
     }
 }
