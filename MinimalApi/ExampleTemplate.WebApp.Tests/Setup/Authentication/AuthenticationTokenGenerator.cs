@@ -4,11 +4,21 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace SukkotStore.WebApp.Tests.Setup;
+namespace ExampleTemplate.WebApp.Tests.Setup.Authentication;
 
+/// <summary>
+/// Class handles generating and parsing JWT's for use during the test project's runtime.
+/// </summary>
 public static class AuthenticationTokenGenerator
 {
+    /// <summary>
+    /// Placeholder name for the scheme
+    /// </summary>
     private const string authenticationScheme = "Test-Authentication";
+
+    /// <summary>
+    /// Secret key used to sign the token
+    /// </summary>
     private const string secretKey = "a355e16e-331c-49d4-b24f-bb4e442aad5a";
 
     public const string issuer = "someIssuer";

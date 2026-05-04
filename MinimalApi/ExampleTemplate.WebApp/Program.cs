@@ -1,12 +1,16 @@
+//#if (includeAuth)
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using SukkotStore.WebApp.Constants;
-using SukkotStore.WebApp.Extensions;
-using SukkotStore.WebApp.Middleware;
-using SukkotStore.WebApp.Models.Options;
-using SukkotStore.WebApp.Policies;
+//#endif
+using ExampleTemplate.WebApp.Constants;
+using ExampleTemplate.WebApp.Extensions;
+using ExampleTemplate.WebApp.Middleware;
+using ExampleTemplate.WebApp.Models.Options;
+//#if (includeAuth)
+using ExampleTemplate.WebApp.Policies;
+//#endif
 
-namespace SukkotStore.WebApp;
+namespace ExampleTemplate.WebApp;
 
 public class Program
 {
@@ -18,8 +22,10 @@ public class Program
         var databaseOptions = new DatabaseSettings();
         builder.Configuration.GetSection("Database").Bind(databaseOptions);
 
+        //#if (includeAuth)
         var authOptions = new AuthenticationSettings();
         builder.Configuration.GetSection("Authentication").Bind(authOptions);
+        //#endif
 
         // Runtime copy of the options for the configuration
         builder.Services
@@ -28,11 +34,13 @@ public class Program
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
+        //#if (includeAuth)
         builder.Services
             .AddOptions<AuthenticationSettings>()
             .BindConfiguration("Authentication")
             .ValidateDataAnnotations()
             .ValidateOnStart();
+        //#endif
 
         builder.Services.AddCors(options =>
         {
@@ -42,6 +50,7 @@ public class Program
                 .AllowAnyMethod());
         });
 
+        //#if (includeAuth)
         builder.Services.AddAuthentication(x =>
         {
             x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -72,6 +81,7 @@ public class Program
             {
                 x.AddRequirements(new AdminRequirement());
             });
+        //#endif
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -79,8 +89,11 @@ public class Program
         builder.Services.AddSwaggerGen();
 
         builder.Services
-            .RegisterDatabaseContext(databaseOptions)
+            .RegisterDatabaseContext(databaseOptions);
+        //#if (includeAuth)
+        builder.Services
             .RegisterHttpClients(authOptions);
+        //#endif
 
         var app = builder.Build();
 
@@ -94,8 +107,10 @@ public class Program
         app.UseCors("allow-all");
 
         app.UseHttpsRedirection();
+        //#if (includeAuth)
         app.UseAuthentication();
         app.UseAuthorization();
+        //#endif
 
         app.RegisterEndpoints();
         app.MapControllers();

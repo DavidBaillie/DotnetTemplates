@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace SukkotStore.WebApp.Middleware;
+namespace ExampleTemplate.WebApp.Middleware;
 
 /// <summary>
 /// General fallback that catches all exceptions and returns an Internal Server Error.
 /// </summary>
-public sealed class FallbackMiddleware(RequestDelegate next, ILogger<FallbackMiddleware> logger)
+public sealed class FallbackMiddleware(
+    RequestDelegate next,
+    ILogger<FallbackMiddleware> logger)
 {
     public async Task Invoke(HttpContext httpContext)
     {

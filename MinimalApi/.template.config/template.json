@@ -1,6 +1,6 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "author": "leema",
+  "author": "David Baillie",
   "classifications": ["Web", "API", "Minimal API"],
   "identity": "MinimalApi.Template",
   "name": "Minimal API Template",
@@ -9,6 +9,32 @@
   "tags": {
     "language": "C#",
     "type": "solution"
+  },
+  "symbols": {
+    "includeAuth": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "description": "Include JWT authentication and authorization."
+    },
+    "usePostgreSql": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "description": "If the PostgreSQL App Db Context should be included."
+    },
+    "testWithPostgreSql": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "description": "If the PostgreSQL App Db Context should be used for testing, and this a database using local Docker should be configured for tests"
+    },
+    "requireApiKey": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "description": "If communication with the API should require an API Key be provider in each request header."
+    }
   },
   "sources": [
     {
@@ -19,6 +45,30 @@
             "**/bin/**",
             "**/obj/**",
             "**/*.user"
+          ]
+        },
+        {
+          "condition": "(!includeAuth)",
+          "exclude": [
+            "ExampleTemplate.WebApp.Tests/Setup/Authentication/**"
+          ]
+        },
+        {
+          "condition": "(!usePostgreSql)",
+          "exclude": [
+            "ExampleTemplate.WebApp/Database/PostgreSql/**"
+          ]
+        },
+        {
+          "condition": "(!testWithPostgreSql)",
+          "exclude": [
+            "ExampleTemplate.WebApp/Database/PostgreSql/**"
+          ]
+        },
+        {
+          "condition": "(!requireApiKey)",
+          "exclude": [
+            "ExampleTemplate.WebApp/Middleware/ApiKeyMiddleware.cs"
           ]
         }
       ]

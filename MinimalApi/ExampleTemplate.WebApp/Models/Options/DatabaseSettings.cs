@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SukkotStore.WebApp.Models.Options;
+namespace ExampleTemplate.WebApp.Models.Options;
 
 public sealed class DatabaseSettings
 {

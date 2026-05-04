@@ -1,8 +1,12 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace SukkotStore.WebApp.Database.EntityFramework;
+namespace ExampleTemplate.WebApp.Database.EntityFramework;
 
+/// <summary>
+/// Default provider that is included with all projects. Allows developers to work locally with a database without needing 
+/// any Migrations to be defined. Place testing and local developer data here for easy access.
+/// </summary>
 public sealed class SqliteAppDbContext : AppDbContext
 {
     /// <summary>
@@ -30,6 +34,7 @@ public sealed class SqliteAppDbContext : AppDbContext
 
     public SqliteAppDbContext(DbContextOptions<SqliteAppDbContext> options, ConnectionPersistor persistor) : base(options)
     {
+        // Need to make sure the file system has the database entity for usage
         Database.EnsureCreated();
         _ = persistor;
     }

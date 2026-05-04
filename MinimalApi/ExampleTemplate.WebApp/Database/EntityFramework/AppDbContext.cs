@@ -1,27 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SukkotStore.WebApp.Constants;
-using SukkotStore.WebApp.Database.Models;
+using ExampleTemplate.WebApp.Database.Models;
 
-namespace SukkotStore.WebApp.Database.EntityFramework;
+namespace ExampleTemplate.WebApp.Database.EntityFramework;
 
+/// <summary>
+/// Base class used for the <see cref="DbContext"/>. When any provider for the <see cref="DbContext"/> is being used across the 
+/// project, this class should be the concrete implementation referenced. Provider implementations should inherit from this, 
+/// be injected into the DI Container, and then referenced as this base class for usage. 
+/// This is important so as to allow providers to be changed at runtime based on developer settings.
+/// </summary>
 public abstract class AppDbContext(DbContextOptions options) : DbContext(options)
 {
-    private static readonly string SCHEMA_NAME = "sukkotstore";
-
-    public DbSet<UserEntity> Users { get; set; } = default!;
+    // Your DbSet<T> here
 
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
-        modelBuilder.HasDefaultSchema(SCHEMA_NAME);
-
-        modelBuilder.Entity<UserEntity>(entity =>
-        {
-            entity.HasKey(x => x.Id);
-            entity.Property(x => x.DisplayName).HasMaxLength(256);
-            entity.ToTable("InternalUsers");
-        });
     }
 }

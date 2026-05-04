@@ -1,4 +1,4 @@
-﻿namespace SukkotStore.WebApp.Interfaces;
+﻿namespace ExampleTemplate.WebApp.Interfaces;
 
 public interface IProvider<out T>
 {

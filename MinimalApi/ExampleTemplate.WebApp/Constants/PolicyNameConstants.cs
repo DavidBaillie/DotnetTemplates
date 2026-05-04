@@ -1,4 +1,4 @@
-﻿namespace SukkotStore.WebApp.Constants;
+﻿namespace ExampleTemplate.WebApp.Constants;
 
 public static class PolicyNameConstants
 {

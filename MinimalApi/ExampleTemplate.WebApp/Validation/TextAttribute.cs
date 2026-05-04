@@ -1,16 +1,23 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
-namespace SukkotStore.Domain.Validation;
+namespace ExampleTemplate.WebApp.Validation;
 
 [AttributeUsage(AttributeTargets.Property)]
 public sealed partial class TextAttribute
     : ValidationAttribute
 {
     /// <summary>
-    /// Only allow valid ASCII chars
+    /// Only allow valid ASCII characters
     /// </summary>
     public bool AsciiOnly { get; init; }
+
+    /// <summary>
+    /// Valid ASCII is between SPACE char and ~ char
+    /// </summary>
+    /// <returns></returns>
+    [GeneratedRegex(@"^[ -~\r\n\t]*$")]
+    private partial Regex AsciiRegex();
 
     /// <summary>
     /// If line break chars should be allowed
@@ -19,13 +26,6 @@ public sealed partial class TextAttribute
 
     [GeneratedRegex(@"[\p{Zl}\p{Zp}\r\n]")]
     private partial Regex LineBreakReqex();
-
-    /// <summary>
-    /// Valid ASCII is between SPACE char and ~ char
-    /// </summary>
-    /// <returns></returns>
-    [GeneratedRegex(@"^[ -~\r\n\t]*$")]
-    private partial Regex AsciiRegex();
 
     /// <summary>
     /// 0x00 through 0x1F + 7F are ASCII control codes. 

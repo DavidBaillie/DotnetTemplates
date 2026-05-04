@@ -1,8 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace SukkotStore.WebApp.Database.EntityFramework;
+namespace ExampleTemplate.WebApp.Database.EntityFramework.PostgreSql;
 
+/// <summary>
+/// Design time factory for the PostgreSql Database Provider
+/// </summary>
 public class PostgresAppDbContextDesignTimeFactory
     : IDesignTimeDbContextFactory<PostgresAppDbContext>
 {
