@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ExampleTemplate.WebApp.Database.EntityFramework;
 
 namespace ExampleTemplate.WebApp.Database.EntityFramework.PostgreSql;
 

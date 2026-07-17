@@ -1,14 +1,11 @@
-//#if (includeAuth)
+#if (includeAuth)
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-//#endif
-using ExampleTemplate.WebApp.Constants;
+using ExampleTemplate.WebApp.Policies;
+#endif
 using ExampleTemplate.WebApp.Extensions;
 using ExampleTemplate.WebApp.Middleware;
 using ExampleTemplate.WebApp.Models.Options;
-//#if (includeAuth)
-using ExampleTemplate.WebApp.Policies;
-//#endif
 
 namespace ExampleTemplate.WebApp;
 
@@ -22,25 +19,12 @@ public class Program
         var databaseOptions = new DatabaseSettings();
         builder.Configuration.GetSection("Database").Bind(databaseOptions);
 
-        //#if (includeAuth)
-        var authOptions = new AuthenticationSettings();
-        builder.Configuration.GetSection("Authentication").Bind(authOptions);
-        //#endif
-
         // Runtime copy of the options for the configuration
         builder.Services
             .AddOptions<DatabaseSettings>()
             .BindConfiguration("Database")
             .ValidateDataAnnotations()
             .ValidateOnStart();
-
-        //#if (includeAuth)
-        builder.Services
-            .AddOptions<AuthenticationSettings>()
-            .BindConfiguration("Authentication")
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
-        //#endif
 
         builder.Services.AddCors(options =>
         {
@@ -50,7 +34,16 @@ public class Program
                 .AllowAnyMethod());
         });
 
-        //#if (includeAuth)
+#if (includeAuth)
+        var authOptions = new AuthenticationSettings();
+            builder.Configuration.GetSection("Authentication").Bind(authOptions);
+
+        builder.Services
+            .AddOptions<AuthenticationSettings>()
+            .BindConfiguration("Authentication")
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
         builder.Services.AddAuthentication(x =>
         {
             x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -81,19 +74,14 @@ public class Program
             {
                 x.AddRequirements(new AdminRequirement());
             });
-        //#endif
+#endif
 
         builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
         builder.Services
             .RegisterDatabaseContext(databaseOptions);
-        //#if (includeAuth)
-        builder.Services
-            .RegisterHttpClients(authOptions);
-        //#endif
 
         var app = builder.Build();
 
@@ -107,16 +95,21 @@ public class Program
         app.UseCors("allow-all");
 
         app.UseHttpsRedirection();
-        //#if (includeAuth)
+
+        app.UseMiddleware<CorrelationMiddleware>();
+
+#if (includeAuth)
         app.UseAuthentication();
         app.UseAuthorization();
-        //#endif
+#endif
+
+#if (requireApiKey)
+        app.UseMiddleware<ApiKeyMiddleware>();
+#endif
+        app.UseMiddleware<FallbackMiddleware>();
 
         app.RegisterEndpoints();
         app.MapControllers();
-
-        app.UseMiddleware<FallbackMiddleware>()
-            .UseMiddleware<ApiKeyMiddleware>();
 
         app.Run();
     }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SukkotStore.Domain.Validation;
+namespace ExampleTemplate.WebApp.Validation;
 
 /// <summary>
 /// Validation attribute for GUIDs that check the GUID is not equal to <see cref="Guid.Empty"/> 

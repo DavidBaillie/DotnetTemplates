@@ -1,6 +1,6 @@
-﻿//#if(includeAuth)
+﻿#if (includeAuth)
 using ExampleTemplate.WebApp.Tests.Setup.Authentication;
-//#endif
+#endif
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 
@@ -20,9 +20,9 @@ public sealed class CustomWebApplicationFactory
         // Modify the DI container here
         builder.ConfigureServices(services =>
         {
-            //#if(includeAuth)
+#if (includeAuth)
             services.ConfigureAuthentication();
-            //#endif
+#endif
         });
     }
 
@@ -31,8 +31,8 @@ public sealed class CustomWebApplicationFactory
     {
         base.ConfigureClient(client);
 
-        //#if(includeAuth)
+#if (includeAuth)
         client.ConfigureTestAuthentication();
-        //#endif
+#endif
     }
 }

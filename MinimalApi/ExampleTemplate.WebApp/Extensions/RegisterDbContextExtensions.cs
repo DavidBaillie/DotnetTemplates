@@ -13,12 +13,10 @@ public static class RegisterDbContextExtensions
     /// </summary>
     private const string MEMORY_PROVIDER = "sqlite";
 
-    //#if (usePostgreSql)
     /// <summary>
     /// Configuration value specifying that a postgresql database should be used
     /// </summary>
     private const string POSTGRESQL_PROVIDER = "postgresql";
-    //#endif
 
     /// <summary>
     /// Connection string to the local in-memory database. This can be changed in the case when multiple runtimes 
@@ -27,7 +25,7 @@ public static class RegisterDbContextExtensions
     private static readonly string MEMORY_CONNECTION_STRING = "DataSource=file::memory:?cache=shared";
 
     /// <summary>
-    /// Registered the database context for the application to use as a data source for the runtime.
+    /// Registers the database context for the application to use as a data source for the runtime.
     /// </summary>
     /// <param name="services">Link to service container</param>
     /// <param name="databaseOptions">Options for configuring the database</param>
@@ -39,7 +37,6 @@ public static class RegisterDbContextExtensions
         // Select the correct database provider for Entity Framework 
         switch (databaseOptions.Provider.ToLowerInvariant())
         {
-            //#if (usePostgreSql)
             case POSTGRESQL_PROVIDER:
                 ArgumentException.ThrowIfNullOrWhiteSpace(databaseOptions.ConnectionString, nameof(databaseOptions.ConnectionString));
 
@@ -49,7 +46,6 @@ public static class RegisterDbContextExtensions
                     options.UseNpgsql(databaseOptions.ConnectionString);
                 });
                 break;
-            //#endif    
             case MEMORY_PROVIDER:
                 services.TryAddSingleton<SqliteAppDbContext.ConnectionPersistor>();
                 services.TryAddScoped<IDbContextFactory<AppDbContext>, PooledAppDbContextFactory<SqliteAppDbContext>>();

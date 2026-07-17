@@ -11,14 +11,11 @@ namespace ExampleTemplate.WebApp.Tests.Integration;
 [SetUpFixture]
 public sealed class IntegrationTestLifeCycle
 {
-    //#if (usePostgreSql && testWithPostgreSql)
     private readonly PostgreSqlContainer psqlContainer = new PostgreSqlBuilder("postgres:18-alpine").Build();
-    //#endif
 
     [OneTimeSetUp]
     public async Task SetupAsync()
     {
-        //#if (usePostgreSql && testWithPostgreSql)
         // Spin up a postgres database 
         await psqlContainer.StartAsync();
         var connectionString = psqlContainer.GetConnectionString();
@@ -32,7 +29,6 @@ public sealed class IntegrationTestLifeCycle
 
         using var dbContext = new PostgresAppDbContext(contextOptions);
         await dbContext.Database.MigrateAsync();
-        //#endif
 
         TestContext.Progress.WriteLine($"Running Integration Tests\n");
     }
@@ -40,10 +36,7 @@ public sealed class IntegrationTestLifeCycle
     [OneTimeTearDown]
     public async Task TearDownAsync()
     {
-        //#if (usePostgreSql && testWithPostgreSql)
         await psqlContainer.DisposeAsync();
-        //#endif
-
         TestContext.Progress.WriteLine($"Integration Tests Completed, cleaning up resources");
     }
 }

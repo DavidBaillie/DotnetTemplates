@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ExampleTemplate.WebApp.Database.Models;
 
 namespace ExampleTemplate.WebApp.Database.EntityFramework;
 

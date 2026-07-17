@@ -25,7 +25,7 @@ public sealed partial class TextAttribute
     public bool AllowLineBreaks { get; init; }
 
     [GeneratedRegex(@"[\p{Zl}\p{Zp}\r\n]")]
-    private partial Regex LineBreakReqex();
+    private partial Regex LineBreakRegex();
 
     /// <summary>
     /// 0x00 through 0x1F + 7F are ASCII control codes. 
@@ -45,7 +45,7 @@ public sealed partial class TextAttribute
         if (value is not string stringValue)
             throw new InvalidOperationException($"{nameof(TextAttribute)} can only be applied to {nameof(String)}, but was applied to {value.GetType().Name}");
 
-        if (!AllowLineBreaks && LineBreakReqex().IsMatch(stringValue))
+        if (!AllowLineBreaks && LineBreakRegex().IsMatch(stringValue))
             return new ValidationResult("Must not contain new line characters (CR, LF, Unicode [Zp] and [Zl]).");
 
         if (AsciiOnly && !AsciiRegex().IsMatch(stringValue))
