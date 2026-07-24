@@ -16,6 +16,9 @@ public sealed class PostgreSqlIntegrationTestLifeCycle
         await psqlContainer.StartAsync();
         var connectionString = psqlContainer.GetConnectionString();
 
+        Environment.SetEnvironmentVariable("Authentication__WellKnownEndpoint", "https://something.ca");
+        Environment.SetEnvironmentVariable("Authentication__Issuer", "someone");
+
         Environment.SetEnvironmentVariable("Database__ConnectionString", connectionString + "; Include Error Detail=true");
         Environment.SetEnvironmentVariable("Database__Provider", "postgresql");
         Environment.SetEnvironmentVariable("ApiKey", "test-api-key-12345");
