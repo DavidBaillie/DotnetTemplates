@@ -4,12 +4,8 @@ using Testcontainers.PostgreSql;
 
 namespace ExampleTemplate.WebApp.Tests.IntegrationTests;
 
-/// <summary>
-/// Sets up tests for the current folder (and sub-folders). Any dependencies that need to exist 
-/// before the tests begin should be stored here.
-/// </summary>
 [SetUpFixture]
-public sealed class IntegrationTestLifeCycle
+public sealed class PostgreSqlIntegrationTestLifeCycle
 {
     private readonly PostgreSqlContainer psqlContainer = new PostgreSqlBuilder("postgres:18-alpine").Build();
 

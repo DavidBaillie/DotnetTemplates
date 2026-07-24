@@ -1,8 +1,9 @@
-#if (includeAuth)
+#if includeAuth
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using ExampleTemplate.WebApp.Policies;
 #endif
+using ExampleTemplate.WebApp.Constants;
 using ExampleTemplate.WebApp.Database.EntityFramework;
 using ExampleTemplate.WebApp.Extensions;
 using ExampleTemplate.WebApp.HealthChecks;
@@ -37,7 +38,7 @@ public class Program
                 .AllowAnyMethod());
         });
 
-#if (includeAuth)
+#if includeAuth
         var authOptions = new AuthenticationSettings();
             builder.Configuration.GetSection("Authentication").Bind(authOptions);
 
@@ -107,12 +108,12 @@ public class Program
 
         app.UseMiddleware<CorrelationMiddleware>();
 
-#if (includeAuth)
+#if includeAuth
         app.UseAuthentication();
         app.UseAuthorization();
 #endif
 
-#if (requireApiKey)
+#if requireApiKey
         app.UseMiddleware<ApiKeyMiddleware>();
 #endif
         app.UseMiddleware<FallbackMiddleware>();

@@ -66,7 +66,7 @@ dotnet test ExampleTemplate.WebApp.Tests/ExampleTemplate.WebApp.Tests.csproj -p:
 
 ```bash
 cd MinimalApi
-dotnet test ExampleTemplate.WebApp.Tests/ExampleTemplate.WebApp.Tests.csproj -p:DefineConstants="requireApiKey;includeAuth"
+dotnet test ExampleTemplate.WebApp.Tests/ExampleTemplate.WebApp.Tests.csproj -p:DefineConstants="requireApiKey%3BincludeAuth"
 ```
 
 ## Project Structure
