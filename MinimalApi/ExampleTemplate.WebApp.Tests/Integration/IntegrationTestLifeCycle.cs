@@ -25,7 +25,7 @@ public sealed class IntegrationTestLifeCycle
             .Options;
 
         Environment.SetEnvironmentVariable("Database__ConnectionString", connectionString + "; Include Error Detail=true");
-        Environment.SetEnvironmentVariable("Database__Provider", "postgres");
+        Environment.SetEnvironmentVariable("Database__Provider", "postgresql");
 
         using var dbContext = new PostgresAppDbContext(contextOptions);
         await dbContext.Database.MigrateAsync();
