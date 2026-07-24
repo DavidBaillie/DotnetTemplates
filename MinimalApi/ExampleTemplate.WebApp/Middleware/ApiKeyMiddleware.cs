@@ -29,8 +29,20 @@ public class ApiKeyMiddleware(RequestDelegate next)
 
         // Check the inbound request contains the expected value
         if (!httpContext.Request.Headers.TryGetValue(API_KEY_HEADER_NAME, out var value) ||
-            StringValues.IsNullOrEmpty(value) ||
-            !value.ToString().Equals(apiKey, StringComparison.Ordinal))
+            StringValues.IsNullOrEmpty(value))
+        {
+            httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            return;
+        }
+
+        // Use constant-time comparison to prevent timing attacks
+        var providedKey = value.ToString();
+        var providedKeyBytes = System.Text.Encoding.UTF8.GetBytes(providedKey);
+        var expectedKeyBytes = System.Text.Encoding.UTF8.GetBytes(apiKey);
+
+        // Keys must be same length and content
+        if (providedKeyBytes.Length != expectedKeyBytes.Length ||
+            !System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(providedKeyBytes, expectedKeyBytes))
         {
             httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
             return;
