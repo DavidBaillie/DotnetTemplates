@@ -11,38 +11,34 @@ namespace ExampleTemplate.WebApp.Tests.Setup;
 [TestFixture, Category("Integration")]
 public abstract class IntegrationTestBase : IDisposable
 {
+    private CustomWebApplicationFactory? _factory;
+    private HttpClient? _client;
+    private IServiceScope? _scope;
+    private IDbContextFactory<AppDbContext>? _dbContextFactory;
+
     /// <summary>
     /// Factory for accessing members and functions
     /// </summary>
-    protected readonly CustomWebApplicationFactory Factory;
+    protected CustomWebApplicationFactory Factory => _factory ??= new CustomWebApplicationFactory();
 
     /// <summary>
     /// Pregenerated HttpClient for making API calls against the endpoints.
     /// </summary>
-    protected readonly HttpClient Client;
+    protected HttpClient Client => _client ??= Factory.CreateClient();
 
     /// <summary>
     /// Service Scope for the webapp runtime
     /// </summary>
-    protected readonly IServiceScope Scope;
+    protected IServiceScope Scope => _scope ??= Factory.Services.CreateScope();
 
     /// <summary>
     /// DbContext factory for accessing <see cref="AppDbContext"/> instances during tests
     /// </summary>
-    protected readonly IDbContextFactory<AppDbContext> DbContextFactory;
-
-    public IntegrationTestBase()
-    {
-        Factory = new CustomWebApplicationFactory();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContextFactory = Scope.ServiceProvider.GetRequiredService<IDbContextFactory<AppDbContext>>();
-    }
+    protected IDbContextFactory<AppDbContext> DbContextFactory => _dbContextFactory ??= Scope.ServiceProvider.GetRequiredService<IDbContextFactory<AppDbContext>>();
 
     public virtual void Dispose()
     {
-        Scope.Dispose();
+        _scope?.Dispose();
         GC.SuppressFinalize(this);
     }
 }

@@ -3,6 +3,7 @@ using ExampleTemplate.WebApp.Tests.Setup.Authentication;
 #endif
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
 
 namespace ExampleTemplate.WebApp.Tests.Setup;
 
@@ -16,6 +17,15 @@ public sealed class CustomWebApplicationFactory
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         base.ConfigureWebHost(builder);
+
+        // Discard the default configuration sources (appsettings.json and
+        // appsettings.{Environment}.json) so tests rely solely on the
+        // environment variables provided by the test lifecycle.
+        builder.ConfigureAppConfiguration(config =>
+        {
+            config.Sources.Clear();
+            config.AddEnvironmentVariables();
+        });
 
         // Modify the DI container here
         builder.ConfigureServices(services =>

@@ -44,7 +44,8 @@
         {
           "condition": "(!requireApiKey)",
           "exclude": [
-            "ExampleTemplate.WebApp/Middleware/ApiKeyMiddleware.cs"
+            "ExampleTemplate.WebApp/Middleware/ApiKeyMiddleware.cs",
+            "ExampleTemplate.WebApp.Tests/IntegrationTests/BuiltIn/ApiKeyMiddlewareTests.cs"
           ]
         }
       ]
