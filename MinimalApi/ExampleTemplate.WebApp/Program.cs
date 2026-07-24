@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using ExampleTemplate.WebApp.Policies;
 #endif
+using ExampleTemplate.WebApp.Database.EntityFramework;
 using ExampleTemplate.WebApp.Extensions;
+using ExampleTemplate.WebApp.HealthChecks;
 using ExampleTemplate.WebApp.Middleware;
 using ExampleTemplate.WebApp.Models.Options;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace ExampleTemplate.WebApp;
 
@@ -76,12 +79,18 @@ public class Program
             });
 #endif
 
-        builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
         builder.Services
             .RegisterDatabaseContext(databaseOptions);
+
+        // Configure health checks with database check
+        builder.Services.AddHealthChecks()
+            .AddCheck<DatabaseHealthCheck>(
+                name: "database",
+                failureStatus: HealthStatus.Unhealthy,
+                tags: ["db", "database"]);
 
         var app = builder.Build();
 
@@ -109,7 +118,6 @@ public class Program
         app.UseMiddleware<FallbackMiddleware>();
 
         app.RegisterEndpoints();
-        app.MapControllers();
 
         app.Run();
     }
