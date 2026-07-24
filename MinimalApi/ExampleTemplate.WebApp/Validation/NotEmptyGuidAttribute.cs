@@ -12,9 +12,9 @@ public sealed class NotEmptyGuidAttribute : ValidationAttribute
 
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
-        if (value is null || value is not Guid uuid || uuid != Guid.Empty)
-            return ValidationResult.Success;
+        if (value is null || value is not Guid uuid || uuid == Guid.Empty)
+            return new ValidationResult("UUID cannot be zero/default");
 
-        return new ValidationResult("UUID cannot be zero/default");
+        return ValidationResult.Success;
     }
 }
