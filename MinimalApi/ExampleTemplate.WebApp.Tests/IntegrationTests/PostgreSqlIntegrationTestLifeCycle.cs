@@ -23,7 +23,13 @@ public sealed class PostgreSqlIntegrationTestLifeCycle
 
         Environment.SetEnvironmentVariable("Database__ConnectionString", connectionString + "; Include Error Detail=true");
         Environment.SetEnvironmentVariable("Database__Provider", "postgresql");
+
         Environment.SetEnvironmentVariable("ApiKey", "test-api-key-12345");
+
+        Environment.SetEnvironmentVariable("RateLimit__Enabled", "false");
+        Environment.SetEnvironmentVariable("RateLimit__PermitLimit", "1");
+        Environment.SetEnvironmentVariable("RateLimit__WindowSeconds", "1");
+        Environment.SetEnvironmentVariable("RateLimit__QueueLimit", "0");
 
         var contextOptions = new DbContextOptionsBuilder<PostgresAppDbContext>()
             .UseNpgsql(connectionString)

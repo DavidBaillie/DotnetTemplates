@@ -10,6 +10,7 @@ using ExampleTemplate.WebApp.HealthChecks;
 using ExampleTemplate.WebApp.Middleware;
 using ExampleTemplate.WebApp.Models.Options;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using System.Threading.RateLimiting;
 
 namespace ExampleTemplate.WebApp;
 
@@ -83,6 +84,70 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        // Configure rate limiting
+        var rateLimitOptions = new RateLimitSettings();
+        builder.Configuration.GetSection("RateLimit").Bind(rateLimitOptions);
+
+        builder.Services
+            .AddOptions<RateLimitSettings>()
+            .BindConfiguration("RateLimit")
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        if (rateLimitOptions.Enabled)
+        {
+            builder.Services.AddRateLimiter(options =>
+            {
+                // Default policy - fixed window
+                options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+                {
+                    // Partition by IP address
+                    var ipAddress = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+                    return RateLimitPartition.GetFixedWindowLimiter(ipAddress, _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = rateLimitOptions.PermitLimit,
+                        Window = TimeSpan.FromSeconds(rateLimitOptions.WindowSeconds),
+                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                        QueueLimit = rateLimitOptions.QueueLimit
+                    });
+                });
+
+                // Customize rejection response
+                options.OnRejected = async (context, cancellationToken) =>
+                {
+                    context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+
+                    TimeSpan? retryAfter = null;
+                    if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfterValue))
+                    {
+                        retryAfter = retryAfterValue;
+                        context.HttpContext.Response.Headers.RetryAfter = retryAfterValue.TotalSeconds.ToString();
+                    }
+
+                    await context.HttpContext.Response.WriteAsJsonAsync(new
+                    {
+                        error = "Too many requests",
+                        message = "Rate limit exceeded. Please try again later.",
+                        retryAfter = retryAfter?.TotalSeconds
+                    }, cancellationToken);
+                };
+
+                // Named policy for more restrictive endpoints
+                options.AddPolicy("strict", context =>
+                {
+                    var ipAddress = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+                    return RateLimitPartition.GetFixedWindowLimiter(ipAddress, _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 10,
+                        Window = TimeSpan.FromMinutes(1),
+                        QueueLimit = 0
+                    });
+                });
+            });
+        }
+
         builder.Services
             .RegisterDatabaseContext(databaseOptions);
 
@@ -105,6 +170,12 @@ public class Program
         app.UseCors("allow-all");
 
         app.UseHttpsRedirection();
+
+        // Enable rate limiting if configured
+        if (rateLimitOptions.Enabled)
+        {
+            app.UseRateLimiter();
+        }
 
         app.UseMiddleware<CorrelationMiddleware>();
 
