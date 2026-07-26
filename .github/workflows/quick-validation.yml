@@ -1,0 +1,54 @@
+name: Quick Template Validation
+
+on:
+  push:
+    branches: [ master, dev ]
+    paths:
+      - 'MinimalApi/**'
+      - '.github/workflows/quick-validation.yml'
+  pull_request:
+    branches: [ master, dev ]
+    paths:
+      - 'MinimalApi/**'
+
+jobs:
+  quick-validation:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+        
+    - name: Validate template.json
+      run: |
+        echo "Checking template.json syntax..."
+        cat MinimalApi/.template.config/template.json | jq empty
+        
+    - name: Install template
+      run: dotnet new install ./MinimalApi
+      
+    - name: List installed templates
+      run: dotnet new list | grep minapi
+      
+    - name: Test template with default parameters
+      run: |
+        cd ${{ runner.temp }}
+        mkdir test-default && cd test-default
+        dotnet new minapi --name DefaultTest
+        dotnet build --configuration Release
+        
+    - name: Test template with all features enabled
+      run: |
+        cd ${{ runner.temp }}
+        mkdir test-all-features && cd test-all-features
+        dotnet new minapi --name AllFeaturesTest --includeAuth true --requireApiKey true
+        dotnet build --configuration Release
+        
+    - name: Uninstall template
+      if: always()
+      run: dotnet new uninstall ./MinimalApi || true

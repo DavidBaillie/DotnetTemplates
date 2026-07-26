@@ -1,5 +1,8 @@
 # .NET Templates Collection
 
+[![Test Template Configurations](https://github.com/DavidBaillie/DotnetTemplates/actions/workflows/test-template.yml/badge.svg)](https://github.com/DavidBaillie/DotnetTemplates/actions/workflows/test-template.yml)
+[![Quick Template Validation](https://github.com/DavidBaillie/DotnetTemplates/actions/workflows/quick-validation.yml/badge.svg)](https://github.com/DavidBaillie/DotnetTemplates/actions/workflows/quick-validation.yml)
+
 A curated collection of .NET project templates designed to accelerate development with best practices, common patterns, and optional features built-in.
 
 ## Available Templates
@@ -88,3 +91,23 @@ cd TestProject
 dotnet build
 dotnet test
 ```
+
+### Automated Testing
+
+This repository includes GitHub Actions workflows for continuous integration:
+
+#### Quick Validation (`quick-validation.yml`)
+- Runs on every push and pull request
+- Validates template syntax
+- Tests template installation
+- Builds projects with default and all-features configurations
+- Fast feedback (< 5 minutes)
+
+#### Comprehensive Testing (`test-template.yml`)
+- Tests all parameter combinations (4 combinations for MinimalApi)
+- Runs on both Ubuntu and Windows runners
+- Executes full test suite for each configuration
+- Uploads test results as artifacts
+- Comprehensive quality assurance (~ 15-20 minutes)
+
+The workflows automatically test every possible combination of template parameters to ensure all configurations work correctly.
