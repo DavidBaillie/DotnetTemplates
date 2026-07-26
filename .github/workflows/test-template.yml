@@ -60,17 +60,19 @@ jobs:
       run: dotnet build --no-restore --configuration Release
       
     - name: Pull PostgreSQL Docker image
+      if: runner.os == 'Linux'
       shell: bash
       run: docker pull postgres:18-alpine
       
     - name: Run tests
+      if: runner.os == 'Linux'
       shell: bash
       working-directory: test-project
       run: dotnet test --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=test-results.trx"
       
     - name: Upload test results
+      if: runner.os == 'Linux' && always()
       uses: actions/upload-artifact@v7
-      if: always()
       with:
         name: test-results-${{ matrix.os }}-auth${{ matrix.include-auth }}-apikey${{ matrix.require-api-key }}
         path: test-project/**/test-results.trx
