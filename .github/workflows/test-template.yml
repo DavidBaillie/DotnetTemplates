@@ -59,6 +59,11 @@ jobs:
       working-directory: test-project
       run: dotnet build --no-restore --configuration Release
       
+    - name: Pull PostgreSQL Docker image (Windows)
+      if: runner.os == 'Windows' && (matrix.include-auth == true || matrix.require-api-key == true)
+      shell: bash
+      run: docker pull postgres:18-alpine
+      
     - name: Run tests
       shell: bash
       working-directory: test-project
