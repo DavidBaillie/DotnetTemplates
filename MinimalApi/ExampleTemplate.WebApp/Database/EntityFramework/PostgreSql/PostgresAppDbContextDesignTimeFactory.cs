@@ -6,7 +6,7 @@ namespace ExampleTemplate.WebApp.Database.EntityFramework.PostgreSql;
 /// <summary>
 /// Design time factory for the PostgreSql Database Provider
 /// </summary>
-public class PostgresAppDbContextDesignTimeFactory
+public sealed class PostgresAppDbContextDesignTimeFactory
     : IDesignTimeDbContextFactory<PostgresAppDbContext>
 {
     PostgresAppDbContext IDesignTimeDbContextFactory<PostgresAppDbContext>.CreateDbContext(string[] args)

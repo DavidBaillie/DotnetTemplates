@@ -1,6 +1,12 @@
 ﻿namespace ExampleTemplate.WebApp.Constants;
 
+/// <summary>
+/// Defines named HttpClient instance identifiers for dependency injection.
+/// </summary>
 public static class HttpClientNames
 {
-    public static readonly string AuthenticationClient = nameof(AuthenticationClient);
+    /// <summary>
+    /// Named HttpClient for authentication-related requests.
+    /// </summary>
+    public const string AuthenticationClient = nameof(AuthenticationClient);
 }

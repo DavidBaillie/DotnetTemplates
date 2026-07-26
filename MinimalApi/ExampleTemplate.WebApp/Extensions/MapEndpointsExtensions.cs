@@ -5,8 +5,16 @@ using System.Text.Json;
 
 namespace ExampleTemplate.WebApp.Extensions;
 
+/// <summary>
+/// Extension methods for registering Minimal API endpoints.
+/// </summary>
 public static class MapEndpointsExtensions
 {
+    /// <summary>
+    /// Registers all health check and API endpoints for the application.
+    /// </summary>
+    /// <param name="endpoints">The endpoint route builder to add routes to.</param>
+    /// <returns>The endpoint route builder for method chaining.</returns>
     public static IEndpointRouteBuilder RegisterEndpoints(this IEndpointRouteBuilder endpoints)
     {
         // Basic health check endpoint - returns 200 OK if healthy
