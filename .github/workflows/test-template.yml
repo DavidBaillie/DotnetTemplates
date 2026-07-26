@@ -34,34 +34,34 @@ jobs:
     - name: Create test directory
       shell: bash
       run: |
-        mkdir -p ${{ runner.temp }}/test-project
+        mkdir -p test-project
         
     - name: Generate project from template
       shell: bash
-      working-directory: ${{ runner.temp }}/test-project
+      working-directory: test-project
       run: |
         dotnet new minapi --name TestProject --includeAuth ${{ matrix.include-auth }} --requireApiKey ${{ matrix.require-api-key }}
         
     - name: Display generated files
       shell: bash
-      working-directory: ${{ runner.temp }}/test-project
+      working-directory: test-project
       run: |
         echo "Generated project structure:"
         ls -la
         
     - name: Restore dependencies
       shell: bash
-      working-directory: ${{ runner.temp }}/test-project
+      working-directory: test-project
       run: dotnet restore
       
     - name: Build project
       shell: bash
-      working-directory: ${{ runner.temp }}/test-project
+      working-directory: test-project
       run: dotnet build --no-restore --configuration Release
       
     - name: Run tests
       shell: bash
-      working-directory: ${{ runner.temp }}/test-project
+      working-directory: test-project
       run: dotnet test --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=test-results.trx"
       
     - name: Upload test results
@@ -69,7 +69,7 @@ jobs:
       if: always()
       with:
         name: test-results-${{ matrix.os }}-auth${{ matrix.include-auth }}-apikey${{ matrix.require-api-key }}
-        path: ${{ runner.temp }}/test-project/**/test-results.trx
+        path: test-project/**/test-results.trx
         
   test-summary:
     runs-on: ubuntu-latest
