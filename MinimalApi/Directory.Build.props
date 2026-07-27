@@ -4,6 +4,7 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<LangVersion>latest</LangVersion>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -11,8 +12,9 @@
 			Suppress specific warnings that are not relevant for this project:
 			- IDE0350: Use collection expression
 			- IDE0200: Use pattern matching
+			- 1591: Missing XML comment for publicly visible type or member
 		-->
-		<NoWarn>$(NoWarn), IDE0350, IDE0200</NoWarn>
+		<NoWarn>$(NoWarn), IDE0350, IDE0200, 1591</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup>

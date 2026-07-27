@@ -38,19 +38,31 @@ public static class MapEndpointsExtensions
                 });
                 await context.Response.WriteAsync(result);
             }
-        }).AllowAnonymous();
+        })
+        .WithTags("Health")
+        .WithSummary("Check API health status")
+        .WithDescription("Returns detailed health status including all registered health checks.")
+        .AllowAnonymous();
 
         // Liveness probe - simple check without dependencies
         endpoints.MapHealthChecks("/health/live", new HealthCheckOptions
         {
             Predicate = _ => false // No checks, just returns 200 if app is running
-        }).AllowAnonymous();
+        })
+        .WithTags("Health")
+        .WithSummary("Liveness probe")
+        .WithDescription("Returns 200 if the application is running, without checking dependencies.")
+        .AllowAnonymous();
 
         // Readiness probe - includes all checks
         endpoints.MapHealthChecks("/health/ready", new HealthCheckOptions
         {
             Predicate = check => true // All checks
-        }).AllowAnonymous();
+        })
+        .WithTags("Health")
+        .WithSummary("Readiness probe")
+        .WithDescription("Returns 200 if the application is ready to accept requests (all health checks pass).")
+        .AllowAnonymous();
 
         return endpoints;
     }

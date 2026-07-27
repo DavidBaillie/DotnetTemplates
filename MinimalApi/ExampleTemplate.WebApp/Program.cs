@@ -82,7 +82,27 @@ public class Program
 #endif
 
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.SwaggerDoc("v1", new()
+            {
+                Title = "Example Template API",
+                Version = "v1",
+                Description = "A Minimal API template with best practices for ASP.NET Core",
+            });
+
+            // Include XML comments if available
+            var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            if (File.Exists(xmlPath))
+            {
+                options.IncludeXmlComments(xmlPath);
+            }
+
+            // Group endpoints by tags
+            options.TagActionsBy(api => [api.GroupName ?? "Default"]);
+            options.DocInclusionPredicate((name, api) => true);
+        });
 
         // Configure rate limiting
         var rateLimitOptions = new RateLimitSettings();
