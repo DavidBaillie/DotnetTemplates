@@ -3,8 +3,14 @@ name: Test MinimalApi Template
 on:
   push:
     branches: [ master, dev ]
+    paths:
+      - 'MinimalApi/**'
+      - '.github/workflows/**'
   pull_request:
     branches: [ master, dev ]
+    paths:
+      - 'MinimalApi/**'
+      - '.github/workflows/**'
   workflow_dispatch:
 
 jobs:

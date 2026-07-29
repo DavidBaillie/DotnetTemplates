@@ -3,8 +3,14 @@ name: Test WebApi Template
 on:
   push:
     branches: [ master, dev ]
+    paths:
+      - 'WebApi/**'
+      - '.github/workflows/**'
   pull_request:
     branches: [ master, dev ]
+    paths:
+      - 'WebApi/**'
+      - '.github/workflows/**'
   workflow_dispatch:
 
 jobs:
