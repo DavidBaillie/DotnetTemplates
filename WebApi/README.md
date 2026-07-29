@@ -142,11 +142,33 @@ The application uses the following middleware pipeline:
 
 ## Testing
 
-Run tests with:
+Run tests with different configurations:
+
+### Basic Tests (No Auth, No API Key)
 
 ```bash
-dotnet test
+dotnet test WebApi/ExampleTemplate.WebApp.Tests/ExampleTemplate.WebApp.Tests.csproj
 ```
+
+### Test with API Key Required
+
+```bash
+dotnet test WebApi/ExampleTemplate.WebApp.Tests/ExampleTemplate.WebApp.Tests.csproj -p:DefineConstants="requireApiKey"
+```
+
+### Test with Authentication
+
+```bash
+dotnet test WebApi/ExampleTemplate.WebApp.Tests/ExampleTemplate.WebApp.Tests.csproj -p:DefineConstants="includeAuth"
+```
+
+### Test with Both API Key and Authentication
+
+```bash
+dotnet test WebApi/ExampleTemplate.WebApp.Tests/ExampleTemplate.WebApp.Tests.csproj -p:DefineConstants="requireApiKey%3BincludeAuth"
+```
+
+Note: Use `%3B` (URL-encoded semicolon) to separate multiple define constants, or use semicolon directly: `"requireApiKey;includeAuth"`.
 
 ## Conditional Compilation
 
