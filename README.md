@@ -20,6 +20,20 @@ A comprehensive .NET Minimal API template with built-in support for:
 
 [View MinimalApi Documentation →](./MinimalApi/README.md)
 
+### WebApi
+
+A production-ready ASP.NET Core Web API template using the **Controller pattern** with:
+- Controller-Based Architecture (traditional MVC-style)
+- JWT Authentication & Authorization (optional)
+- API Key Middleware (optional)
+- Entity Framework Core with SQLite (dev) and PostgreSQL (production)
+- Health checks and monitoring
+- Rate limiting with IP-based partitioning
+- Swagger/OpenAPI documentation
+- Comprehensive testing setup
+
+[View WebApi Documentation →](./WebApi/README.md)
+
 ## Quick Start
 
 ### Installation
@@ -28,7 +42,7 @@ Install a template locally for use with `dotnet new`:
 
 ```bash
 # Navigate to the template directory
-cd MinimalApi
+cd MinimalApi  # or cd WebApi
 
 # Install the template
 dotnet new install .
@@ -44,6 +58,12 @@ dotnet new minapi -n MyApiProject
 
 # With optional features
 dotnet new minapi -n MyApiProject --includeAuth true --requireApiKey true
+
+# Create a new Controller-based Web API project
+dotnet new starterwebapp -n MyWebApi
+
+# With optional features
+dotnet new starterwebapp -n MyWebApi --includeAuth true --requireApiKey true
 ```
 
 ### Uninstalling Templates
@@ -104,7 +124,7 @@ This repository includes GitHub Actions workflows for continuous integration:
 - Fast feedback (< 5 minutes)
 
 #### Comprehensive Testing (`test-template.yml`)
-- Tests all parameter combinations (4 combinations for MinimalApi)
+- Tests all parameter combinations (4 combinations per template)
 - Runs on both Ubuntu and Windows runners
 - Executes full test suite for each configuration
 - Uploads test results as artifacts
