@@ -40,7 +40,7 @@ jobs:
       shell: bash
       working-directory: test-project
       run: |
-        dotnet new webapp --name TestProject --includeAuth ${{ matrix.include-auth }} --requireApiKey ${{ matrix.require-api-key }}
+        dotnet new starterwebapp --name TestProject --includeAuth ${{ matrix.include-auth }} --requireApiKey ${{ matrix.require-api-key }}
         
     - name: Display generated files
       shell: bash
@@ -74,7 +74,7 @@ jobs:
       if: runner.os == 'Linux' && always()
       uses: actions/upload-artifact@v7
       with:
-        name: test-results-webapp-${{ matrix.os }}-auth${{ matrix.include-auth }}-apikey${{ matrix.require-api-key }}
+        name: test-results-starterwebapp-${{ matrix.os }}-auth${{ matrix.include-auth }}-apikey${{ matrix.require-api-key }}
         path: test-project/**/test-results.trx
         
   test-summary:
