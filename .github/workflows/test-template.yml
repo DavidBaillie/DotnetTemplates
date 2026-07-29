@@ -14,10 +14,11 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
+        template: [MinimalApi, WebApi]
         include-auth: [true, false]
         require-api-key: [true, false]
         
-    name: Test (OS=${{ matrix.os }}, Auth=${{ matrix.include-auth }}, ApiKey=${{ matrix.require-api-key }})
+    name: Test ${{ matrix.template }} (OS=${{ matrix.os }}, Auth=${{ matrix.include-auth }}, ApiKey=${{ matrix.require-api-key }})
     
     steps:
     - name: Checkout repository
@@ -29,7 +30,7 @@ jobs:
         dotnet-version: '10.0.x'
         
     - name: Install template
-      run: dotnet new install ./MinimalApi
+      run: dotnet new install ./${{ matrix.template }}
       
     - name: Create test directory
       shell: bash
@@ -40,7 +41,8 @@ jobs:
       shell: bash
       working-directory: test-project
       run: |
-        dotnet new minapi --name TestProject --includeAuth ${{ matrix.include-auth }} --requireApiKey ${{ matrix.require-api-key }}
+        TEMPLATE_NAME=$(echo "${{ matrix.template }}" | tr '[:upper:]' '[:lower:]')
+        dotnet new $TEMPLATE_NAME --name TestProject --includeAuth ${{ matrix.include-auth }} --requireApiKey ${{ matrix.require-api-key }}
         
     - name: Display generated files
       shell: bash
@@ -74,7 +76,7 @@ jobs:
       if: runner.os == 'Linux' && always()
       uses: actions/upload-artifact@v7
       with:
-        name: test-results-${{ matrix.os }}-auth${{ matrix.include-auth }}-apikey${{ matrix.require-api-key }}
+        name: test-results-${{ matrix.template }}-${{ matrix.os }}-auth${{ matrix.include-auth }}-apikey${{ matrix.require-api-key }}
         path: test-project/**/test-results.trx
         
   test-summary:
