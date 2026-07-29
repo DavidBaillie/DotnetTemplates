@@ -1,4 +1,4 @@
-name: Test Template Configurations
+name: Test MinimalApi Template
 
 on:
   push:
@@ -14,11 +14,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        template: [MinimalApi, WebApi]
         include-auth: [true, false]
         require-api-key: [true, false]
         
-    name: Test ${{ matrix.template }} (OS=${{ matrix.os }}, Auth=${{ matrix.include-auth }}, ApiKey=${{ matrix.require-api-key }})
+    name: Test MinimalApi (OS=${{ matrix.os }}, Auth=${{ matrix.include-auth }}, ApiKey=${{ matrix.require-api-key }})
     
     steps:
     - name: Checkout repository
@@ -30,7 +29,7 @@ jobs:
         dotnet-version: '10.0.x'
         
     - name: Install template
-      run: dotnet new install ./${{ matrix.template }}
+      run: dotnet new install ./MinimalApi
       
     - name: Create test directory
       shell: bash
@@ -41,8 +40,7 @@ jobs:
       shell: bash
       working-directory: test-project
       run: |
-        TEMPLATE_NAME=$(echo "${{ matrix.template }}" | tr '[:upper:]' '[:lower:]')
-        dotnet new $TEMPLATE_NAME --name TestProject --includeAuth ${{ matrix.include-auth }} --requireApiKey ${{ matrix.require-api-key }}
+        dotnet new minimalapi --name TestProject --includeAuth ${{ matrix.include-auth }} --requireApiKey ${{ matrix.require-api-key }}
         
     - name: Display generated files
       shell: bash
@@ -76,7 +74,7 @@ jobs:
       if: runner.os == 'Linux' && always()
       uses: actions/upload-artifact@v7
       with:
-        name: test-results-${{ matrix.template }}-${{ matrix.os }}-auth${{ matrix.include-auth }}-apikey${{ matrix.require-api-key }}
+        name: test-results-minimalapi-${{ matrix.os }}-auth${{ matrix.include-auth }}-apikey${{ matrix.require-api-key }}
         path: test-project/**/test-results.trx
         
   test-summary:
@@ -87,7 +85,7 @@ jobs:
     - name: Check test results
       run: |
         if [ "${{ needs.test-template.result }}" == "failure" ]; then
-          echo "Some template tests failed"
+          echo "MinimalApi template tests failed"
           exit 1
         fi
-        echo "All template tests passed!"
+        echo "All MinimalApi template tests passed!"
