@@ -40,7 +40,7 @@ jobs:
       shell: bash
       working-directory: test-project
       run: |
-        dotnet new minimalapi --name TestProject --includeAuth ${{ matrix.include-auth }} --requireApiKey ${{ matrix.require-api-key }}
+        dotnet new minapi --name TestProject --includeAuth ${{ matrix.include-auth }} --requireApiKey ${{ matrix.require-api-key }}
         
     - name: Display generated files
       shell: bash
