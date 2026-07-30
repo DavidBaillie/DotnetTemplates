@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json.schemastore.org/template",
+  "author": "David Baillie",
+  "classifications": ["Web", "API", "WebApp"],
+  "identity": "CleanWebApp.Template",
+  "name": "Clean Web API Template",
+  "shortName": "cleanwebapp",
+  "sourceName": "ExampleTemplate",
+  "tags": {
+    "language": "C#",
+    "type": "solution"
+  },
+  "symbols": {
+    "includeAuth": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "description": "Include JWT authentication and authorization."
+    },
+    "requireApiKey": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "description": "If communication with the API should require an API Key be provider in each request header."
+    }
+  },
+  "sources": [
+    {
+      "modifiers": [
+        {
+          "exclude": [
+            ".template.config/**",
+            "**/bin/**",
+            "**/obj/**",
+            "**/*.user"
+          ]
+        },
+        {
+          "condition": "(!includeAuth)",
+          "exclude": [
+            "ExampleTemplate.WebApp.Tests/Setup/Authentication/**"
+          ]
+        },
+        {
+          "condition": "(!requireApiKey)",
+          "exclude": [
+            "ExampleTemplate.WebApp/Middleware/ApiKeyMiddleware.cs",
+            "ExampleTemplate.WebApp.Tests/IntegrationTests/BuiltIn/ApiKeyMiddlewareTests.cs"
+          ]
+        }
+      ]
+    }
+  ]
+}

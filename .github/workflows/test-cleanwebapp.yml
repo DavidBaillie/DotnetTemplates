@@ -1,0 +1,97 @@
+name: Test CleanWebApp Template
+
+on:
+  push:
+    branches: [ master, dev ]
+    paths:
+      - 'CleanWebApp/**'
+      - '.github/workflows/**'
+  pull_request:
+    branches: [ master, dev ]
+    paths:
+      - 'CleanWebApp/**'
+      - '.github/workflows/**'
+  workflow_dispatch:
+
+jobs:
+  test-template:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        include-auth: [true, false]
+        require-api-key: [true, false]
+        
+    name: Test CleanWebApp (OS=${{ matrix.os }}, Auth=${{ matrix.include-auth }}, ApiKey=${{ matrix.require-api-key }})
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v6
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: '10.0.x'
+        
+    - name: Install template
+      run: dotnet new install ./CleanWebApp
+      
+    - name: Create test directory
+      shell: bash
+      run: |
+        mkdir -p test-project
+        
+    - name: Generate project from template
+      shell: bash
+      working-directory: test-project
+      run: |
+        dotnet new cleanwebapp --name TestProject --includeAuth ${{ matrix.include-auth }} --requireApiKey ${{ matrix.require-api-key }}
+        
+    - name: Display generated files
+      shell: bash
+      working-directory: test-project
+      run: |
+        echo "Generated project structure:"
+        ls -la
+        
+    - name: Restore dependencies
+      shell: bash
+      working-directory: test-project
+      run: dotnet restore
+      
+    - name: Build project
+      shell: bash
+      working-directory: test-project
+      run: dotnet build --no-restore --configuration Release
+      
+    - name: Pull PostgreSQL Docker image
+      if: runner.os == 'Linux'
+      shell: bash
+      run: docker pull postgres:18-alpine
+      
+    - name: Run tests
+      if: runner.os == 'Linux'
+      shell: bash
+      working-directory: test-project
+      run: dotnet test --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=test-results.trx"
+      
+    - name: Upload test results
+      if: runner.os == 'Linux' && always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: test-results-cleanwebapp-${{ matrix.os }}-auth${{ matrix.include-auth }}-apikey${{ matrix.require-api-key }}
+        path: test-project/**/test-results.trx
+        
+  test-summary:
+    runs-on: ubuntu-latest
+    needs: test-template
+    if: always()
+    steps:
+    - name: Check test results
+      run: |
+        if [ "${{ needs.test-template.result }}" == "failure" ]; then
+          echo "CleanWebApp template tests failed"
+          exit 1
+        fi
+        echo "All CleanWebApp template tests passed!"
